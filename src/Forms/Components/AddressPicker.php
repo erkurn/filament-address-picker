@@ -1,4 +1,5 @@
 <?php
+
 namespace Erkurn\FilamentAddressPicker\Forms\Components;
 
 use Filament\Forms\Components\Concerns\HasPlaceholder;
@@ -16,7 +17,7 @@ class AddressPicker extends Field
 
     protected string $view = 'filament-address-picker::components.address-picker';
 
-    public function getApiKey() : string
+    public function getApiKey(): string
     {
         return $this->api_key;
     }
@@ -48,6 +49,7 @@ class AddressPicker extends Field
     public function showValue($value = true)
     {
         $this->debug = $value;
+
         return $this;
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Erkurn\FilamentAddressPicker\Tests;
 
+use Erkurn\FilamentAddressPicker\FilamentAddressPickerServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Erkurn\FilamentAddressPicker\FilamentAddressPickerServiceProvider;
 
 class TestCase extends Orchestra
 {
