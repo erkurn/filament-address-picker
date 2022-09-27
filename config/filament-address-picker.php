@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'google_map_key' => "",
+    'google_map_key' => '',
 ];

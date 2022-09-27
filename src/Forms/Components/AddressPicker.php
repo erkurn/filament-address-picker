@@ -5,10 +5,8 @@ namespace Erkurn\FilamentAddressPicker\Forms\Components;
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
-use Geocoder\Model\AddressCollection;
 use Geocoder\Provider\Cache\ProviderCache;
 use Geocoder\Provider\GoogleMaps\GoogleMaps;
-use Geocoder\Provider\GoogleMaps\Model\GoogleAddress;
 use Geocoder\Query\ReverseQuery;
 use GuzzleHttp\Client;
 
@@ -30,7 +28,7 @@ class AddressPicker extends Field
         'streetViewControl' => true,
         'rotateControl' => true,
         'fullscreenControl' => true,
-        'searchBoxControl' => false
+        'searchBoxControl' => false,
     ];
 
     public array $defaultLocation = [
@@ -84,24 +82,25 @@ class AddressPicker extends Field
         return config('filament-address-picker.google_map_key');
     }
 
-    public function getAddresses() : \Geocoder\Collection
+    public function getAddresses(): \Geocoder\Collection
     {
         $httpClient = new Client();
         $provider = new GoogleMaps($httpClient, null, $this->getApiKey());
         $cachedProvider = new ProviderCache(
             $provider,
             new ArrayCachePool(),
-    60 * 60 * 24
+            60 * 60 * 24
         );
 
         $geocoder = new \Geocoder\StatefulGeocoder($cachedProvider, 'en');
+
         return $geocoder->reverseQuery(ReverseQuery::fromCoordinates(
             data_get($this->getState(), 'lat'),
             data_get($this->getState(), 'lng')
         ));
     }
 
-    public function getAddress() : \Geocoder\Location
+    public function getAddress(): \Geocoder\Location
     {
         return $this->getAddresses()->first();
     }
@@ -118,7 +117,7 @@ class AddressPicker extends Field
             } catch (\Exception $e) {
                 return [
                     'lat' => 0,
-                    'lng' => 0
+                    'lng' => 0,
                 ];
             }
         }
