@@ -2,7 +2,6 @@
 
 namespace Erkurn\FilamentAddressPicker\Forms\Components;
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
 use Geocoder\Model\AddressCollection;
@@ -88,13 +87,8 @@ class AddressPicker extends Field
     {
         $httpClient = new Client();
         $provider = new GoogleMaps($httpClient, null, $this->getApiKey());
-        $cachedProvider = new ProviderCache(
-            $provider,
-            new ArrayCachePool(),
-    60 * 60 * 24
-        );
 
-        $geocoder = new \Geocoder\StatefulGeocoder($cachedProvider, 'en');
+        $geocoder = new \Geocoder\StatefulGeocoder($provider, 'en');
         return $geocoder->reverseQuery(ReverseQuery::fromCoordinates(
             data_get($this->getState(), 'lat'),
             data_get($this->getState(), 'lng')
