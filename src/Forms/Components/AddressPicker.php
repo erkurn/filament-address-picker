@@ -2,14 +2,19 @@
 
 namespace Erkurn\FilamentAddressPicker\Forms\Components;
 
+use Cache\Adapter\PHPArray\ArrayCachePool;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
+use Geocoder\Model\AddressCollection;
+use Geocoder\Provider\Cache\ProviderCache;
+use Geocoder\Provider\GoogleMaps\GoogleMaps;
+use Geocoder\Provider\GoogleMaps\Model\GoogleAddress;
+use Geocoder\Query\ReverseQuery;
+use GuzzleHttp\Client;
 
 class AddressPicker extends Field
 {
     use HasPlaceholder;
-
-    protected string $api_key;
 
     protected string $min_height;
 
@@ -17,16 +22,106 @@ class AddressPicker extends Field
 
     protected string $view = 'filament-address-picker::components.address-picker';
 
-    public function getApiKey(): string
+    public int $defaultZoom = 8;
+
+    public array $controls = [
+        'mapTypeControl' => true,
+        'scaleControl' => true,
+        'streetViewControl' => true,
+        'rotateControl' => true,
+        'fullscreenControl' => true,
+        'searchBoxControl' => false
+    ];
+
+    public array $defaultLocation = [
+        'lat' => -6.914744,
+        'lng' => 107.609810,
+    ];
+
+    public function getDefaultZoom(): int
     {
-        return $this->api_key;
+        return $this->defaultZoom;
     }
 
-    public function apiKey(string $api_key)
+    public function getDefaultLocation(): string
     {
-        $this->api_key = $api_key;
+        return json_encode($this->defaultLocation, JSON_THROW_ON_ERROR);
+    }
+
+    public function setDefaultLocation(array $defaultLocation): static
+    {
+        $this->defaultLocation = $defaultLocation;
 
         return $this;
+    }
+
+    public function defaultZoom(int $defaultZoom): static
+    {
+        $this->defaultZoom = $defaultZoom;
+
+        return $this;
+    }
+
+    public function getMapControls(): string
+    {
+        return json_encode($this->controls, JSON_THROW_ON_ERROR);
+    }
+
+    public function isSearchBoxControlEnabled(): bool
+    {
+        return $this->controls['searchBoxControl'];
+    }
+
+    public function mapControls(array $controls): static
+    {
+        $this->controls = array_merge($this->controls, $controls);
+
+        return $this;
+    }
+
+    public function getApiKey()
+    {
+        return config('filament-address-picker.google_map_key');
+    }
+
+    public function getAddresses() : \Geocoder\Collection
+    {
+        $httpClient = new Client();
+        $provider = new GoogleMaps($httpClient, null, $this->getApiKey());
+        $cachedProvider = new ProviderCache(
+            $provider,
+            new ArrayCachePool(),
+    60 * 60 * 24
+        );
+
+        $geocoder = new \Geocoder\StatefulGeocoder($cachedProvider, 'en');
+        return $geocoder->reverseQuery(ReverseQuery::fromCoordinates(
+            data_get($this->getState(), 'lat'),
+            data_get($this->getState(), 'lng')
+        ));
+    }
+
+    public function getAddress() : \Geocoder\Location
+    {
+        return $this->getAddresses()->first();
+    }
+
+    public function getState()
+    {
+        $state = parent::getState();
+
+        if (is_array($state)) {
+            return $state;
+        } else {
+            try {
+                return @json_decode($state, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\Exception $e) {
+                return [
+                    'lat' => 0,
+                    'lng' => 0
+                ];
+            }
+        }
     }
 
     public function getMinHeight()

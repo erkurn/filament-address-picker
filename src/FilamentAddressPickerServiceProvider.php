@@ -15,6 +15,7 @@ class FilamentAddressPickerServiceProvider extends PluginServiceProvider
     {
         $package
             ->name('filament-address-picker')
+            ->hasConfigFile()
             ->hasViews();
     }
 }

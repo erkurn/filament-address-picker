@@ -33,11 +33,29 @@ class FilamentResource extends Resource
     {
         return $form->schema([
             AddressPicker::make('coordinate')
-                ->apiKey('Google Map API')
+                ->setDefaultLocation([ // Set Default Location
+                    'lat' =>    -6.914744,
+                    'lng'  =>  107.609810
+                ])
+                ->mapControls([ // Map Controls
+                    'mapTypeControl' => true,
+                    'scaleControl' => true,
+                    'streetViewControl' => false,
+                    'rotateControl' => true,
+                    'fullscreenControl' => true,
+                    'searchBoxControl' => true
+                ])
+                ->minHeight(300) // Min Height In Pixels
+                ->defaultZoom(16) // Default Zoom
+                ->placeholder("Search Address") // Default Search
+                ->afterStateUpdated(function ($state, $component, $set) {
+                    $location = $component->getAddress(); // Get Details Location After Pick Location
+                    
+                    $location->getAdminLevels()->get(4)->getName(); // Post Code
+                    $location->getStreetName(); // Street Name
+                    $location->getStreetNumber(); // Street Number
+                })
                 ->placeholder("Search Address")
-                //->default('-6.903650, 107.639099') // Coordinate Format
-                //->default('Kota Bandung') // Address Format
-                ->showValue()
         ]);  
     }
 }
