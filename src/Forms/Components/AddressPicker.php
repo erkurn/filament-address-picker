@@ -8,6 +8,7 @@ use Geocoder\Provider\Cache\ProviderCache;
 use Geocoder\Provider\GoogleMaps\GoogleMaps;
 use Geocoder\Query\ReverseQuery;
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
 
 class AddressPicker extends Field
 {
@@ -105,6 +106,13 @@ class AddressPicker extends Field
         if (is_array($state)) {
             return $state;
         } else {
+            if (count(explode(',', $state)) > 0) {
+                return [
+                    'lat'   =>  floatval(explode(',', $state)[0]),
+                    'lng'   =>  floatval(explode(',', $state)[1]),
+                ];
+            }
+
             try {
                 return @json_decode($state, true, 512, JSON_THROW_ON_ERROR);
             } catch (\Exception $e) {

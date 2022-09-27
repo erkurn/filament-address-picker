@@ -18,10 +18,6 @@ export default (Alpine) => {
             state,
             api_key,
             markerLocation: {},
-            coordinate: {
-                lat: 0,
-                lng: 0
-            },
             init: function() {
                 loader.loadCallback(e => {
                     if (e) {
@@ -29,10 +25,10 @@ export default (Alpine) => {
                     }
 
                     var valueLocation = null;
-                    if (this?.state instanceof Object) {
-                        valueLocation = this?.state;
+                    if (state instanceof Object) {
+                        valueLocation = state.initialValue;
                     } else {
-                        valueLocation = JSON.parse(this?.state);
+                        valueLocation = JSON.parse(state);
                     }
 
                     var center = {
