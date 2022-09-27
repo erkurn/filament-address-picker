@@ -2,6 +2,10 @@
 
 All notable changes to `filament-address-picker` will be documented in this file.
 
+## v1.1.0 - 2022-09-27
+
+**Full Changelog**: https://github.com/erkurn/filament-address-picker/compare/v1.0.0...v1.1.0
+
 ## Initial Release - 2022-07-20
 
 feat : add new field address picker
