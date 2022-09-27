@@ -4,7 +4,6 @@ namespace Erkurn\FilamentAddressPicker\Forms\Components;
 
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
-use Geocoder\Provider\Cache\ProviderCache;
 use Geocoder\Provider\GoogleMaps\GoogleMaps;
 use Geocoder\Query\ReverseQuery;
 use GuzzleHttp\Client;
@@ -88,6 +87,7 @@ class AddressPicker extends Field
         $provider = new GoogleMaps($httpClient, null, $this->getApiKey());
 
         $geocoder = new \Geocoder\StatefulGeocoder($provider, 'en');
+
         return $geocoder->reverseQuery(ReverseQuery::fromCoordinates(
             data_get($this->getState(), 'lat'),
             data_get($this->getState(), 'lng')
