@@ -7,7 +7,6 @@ use Filament\Forms\Components\Field;
 use Geocoder\Provider\GoogleMaps\GoogleMaps;
 use Geocoder\Query\ReverseQuery;
 use GuzzleHttp\Client;
-use Illuminate\Support\Arr;
 
 class AddressPicker extends Field
 {
@@ -108,8 +107,8 @@ class AddressPicker extends Field
         } else {
             if (count(explode(',', $state)) > 0 && !empty($state)) {
                 return [
-                    'lat'   =>  floatval(explode(',', $state)[0]),
-                    'lng'   =>  floatval(explode(',', $state)[1]),
+                    'lat' => floatval(explode(',', $state)[0]),
+                    'lng' => floatval(explode(',', $state)[1]),
                 ];
             }
 
