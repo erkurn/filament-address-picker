@@ -105,7 +105,7 @@ class AddressPicker extends Field
         if (is_array($state)) {
             return $state;
         } else {
-            if (count(explode(',', $state)) > 0 && !empty($state)) {
+            if (count(explode(',', $state)) > 0 && ! empty($state)) {
                 return [
                     'lat' => floatval(explode(',', $state)[0]),
                     'lng' => floatval(explode(',', $state)[1]),
